@@ -10,6 +10,6 @@ public class DesktopLauncher {
 		config.title = "Boats With Buds";
         config.width = 1080/3;
         config.height = 1920/3;
-		new LwjglApplication(new BwBE(), config);
+		new LwjglApplication(new BwBE(new ActionResolverDesktop()), config);
 	}
 }

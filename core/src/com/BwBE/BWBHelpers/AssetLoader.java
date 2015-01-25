@@ -7,8 +7,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class AssetLoader {
 	
-	public static Texture logoTexture;
-	public static TextureRegion logo;
+	public static Texture logoTexture, buttonTexture;
+	public static TextureRegion logo, newGame;
 	
 	public static void load() {
 		
@@ -17,6 +17,13 @@ public class AssetLoader {
 
 		//logo = new TextureRegion(logoTexture, 0, 0, 800, 157);
 		logo = new TextureRegion(logoTexture, 0, 0, 422, 640);
+		
+		//2048x2048
+		buttonTexture = new Texture(Gdx.files.internal("data/BWBbuttons.png"));
+		buttonTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+
+		//logo = new TextureRegion(logoTexture, 0, 0, 800, 157);
+		newGame = new TextureRegion(buttonTexture, 0, 0, 1080, 120);
 		
 	
 	}

@@ -1,12 +1,11 @@
 package com.BwBE.Screens;
 
-import com.badlogic.gdx.ApplicationListener;
+import com.BwBE.BWBHelpers.ActionResolver;
+import com.BwBE.game.BwBE;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -14,13 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.BwBE.BWBHelpers.AssetLoader;
-import com.BwBE.game.BwBE;
-import com.BwBE.BWBHelpers.ActionResolver;
 
+public class SettingsScreen implements Screen{
 
-public class MenuScreen implements Screen{
-	
 	private BwBE game;
 	public ActionResolver actionResolver;
 	
@@ -28,16 +23,17 @@ public class MenuScreen implements Screen{
 	private Stage stage = new Stage();
 	private Table table = new Table();
 	
-	private TextButton buttonNewGame = new TextButton("Start New Game", skin, "default"),
-			buttonSplash = new TextButton("Splash Again", skin, "default"),
-			buttonToast = new TextButton("Show Me Some Toast", skin, "default"),
-			buttonSettings = new TextButton("Game Settings", skin, "default"),
-			buttonExit = new TextButton("Exit", skin, "default");
+	private TextButton buttonMenu = new TextButton("Main Menu", skin, "default"),
+			buttonSound = new TextButton("Turn Sound On", skin, "default"),
+			buttonFacebook = new TextButton("Facebook", skin, "default"),
+			buttonGoogle = new TextButton("Google Plus", skin, "default"),
+			buttonMapType = new TextButton("Classic Map", skin, "default"),
+			buttonGameSpeed = new TextButton("Classic Speed", skin, "default");
 	private Label title = new Label("Boats with Buds", skin, "default");
 	
 	
 	
-	public MenuScreen(BwBE game) {
+	public SettingsScreen(BwBE game) {
 		this.game = game;
 		this.actionResolver = BwBE.actionResolver;
 	}
@@ -45,36 +41,43 @@ public class MenuScreen implements Screen{
 	@Override
 	public void show() {	
 		
-		buttonNewGame.addListener(new ClickListener(){
+		buttonMenu.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-            	((Game)Gdx.app.getApplicationListener()).setScreen(new NewGameScreen(game));
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new MenuScreen(game));
             }
         });
-		
-		buttonSplash.addListener(new ClickListener(){
+        buttonSound.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new SplashScreen(game));
+                buttonSound.setText("Sound is off");
+                //future work: toggle sound button between on and off.  Store the chosen setting.
             }
         });
-        buttonToast.addListener(new ClickListener(){
+        buttonFacebook.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                actionResolver.toastMe();
+            	//facebook action here
             }
         });
-        buttonSettings.addListener(new ClickListener(){
+        buttonGoogle.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-            	((Game)Gdx.app.getApplicationListener()).setScreen(new SettingsScreen(game));
+                //G+ action here
             }
         });
-        buttonExit.addListener(new ClickListener(){
+        buttonMapType.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();
-                // or System.exit(0);
+                buttonMapType.setText("Islands Map");
+                //future work: toggle between islands and classic.  Store the chosen setting.
+            }
+        });
+        buttonGameSpeed.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                buttonGameSpeed.setText("Speed Game");
+                //future work: toggle between classic and speed.  Store the chosen setting.
             }
         });
         
@@ -82,11 +85,12 @@ public class MenuScreen implements Screen{
       //The elements are displayed in the order you add them.
         //The first appear on top, the last at the bottom.
         table.add(title).padBottom(40).row();
-        table.add(buttonNewGame).size(150,60).padBottom(20).row();
-        table.add(buttonSplash).size(150,60).padBottom(20).row();
-        table.add(buttonToast).size(150,60).padBottom(20).row();
-        table.add(buttonSettings).size(150,60).padBottom(20).row();
-        table.add(buttonExit).size(150,60).padBottom(20).row();
+        table.add(buttonMenu).size(150,60).padBottom(20).row();
+        table.add(buttonSound).size(150,60).padBottom(20).row();
+        table.add(buttonFacebook).size(150,60).padBottom(20).row();
+        table.add(buttonGoogle).size(150,60).padBottom(20).row();
+        table.add(buttonMapType).size(150,60).padBottom(20).row();
+        table.add(buttonGameSpeed).size(150,60).padBottom(20).row();
 
         table.setFillParent(true);
         stage.addActor(table);
@@ -98,7 +102,7 @@ public class MenuScreen implements Screen{
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(1, 0, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act();
 		stage.draw();
