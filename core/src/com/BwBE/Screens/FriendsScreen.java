@@ -36,6 +36,11 @@ public class FriendsScreen implements Screen{
 	@Override
 	public void show() {	
 		
+		float width = Gdx.graphics.getWidth();
+		float height = Gdx.graphics.getHeight();
+		float desiredWidth = width * .7f;
+		float desiredHeight = height * .1f;
+		
 		buttonStartGame.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -47,7 +52,7 @@ public class FriendsScreen implements Screen{
       //The elements are displayed in the order you add them.
         //The first appear on top, the last at the bottom.
         table.add(title).padBottom(40).row();
-        table.add(buttonStartGame).size(150,60).padBottom(20).row();
+        table.add(buttonStartGame).size(desiredWidth,desiredHeight).padBottom(20).row();
 
 
         table.setFillParent(true);

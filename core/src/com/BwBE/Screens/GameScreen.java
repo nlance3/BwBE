@@ -1,6 +1,7 @@
 package com.BwBE.Screens;
 
 import com.BwBE.BWBHelpers.ActionResolver;
+import com.BwBE.BWBHelpers.AssetLoader;
 import com.BwBE.game.BwBE;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -29,9 +30,7 @@ public class GameScreen implements Screen{
 	private Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 	private Stage stage = new Stage();
 	private Table table = new Table();
-	private Texture background = new Texture(Gdx.files.internal("data/gameBoard.png"));
-	private TextureRegion region = new TextureRegion(background, 0, 0, 1080, 1920);
-	private Sprite bg = new Sprite(region);
+	private Sprite bg;
 	private Label title = new Label("This is the where the game play happens :)", skin, "default");
 	
 	
@@ -43,6 +42,7 @@ public class GameScreen implements Screen{
 	
 	@Override
 	public void show() {	
+		bg = new Sprite(AssetLoader.background);
 		batch = stage.getBatch();
 		bg.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		

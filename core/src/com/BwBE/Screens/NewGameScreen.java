@@ -42,6 +42,11 @@ public class NewGameScreen implements Screen{
 	@Override
 	public void show() {	
 		
+		float width = Gdx.graphics.getWidth();
+		float height = Gdx.graphics.getHeight();
+		float desiredWidth = width * .7f;
+		float desiredHeight = height * .1f;
+		
 		isFast = false;
 		isIslands = false;
 		
@@ -105,13 +110,13 @@ public class NewGameScreen implements Screen{
       //The elements are displayed in the order you add them.
         //The first appear on top, the last at the bottom.
         table.add(title).padBottom(40).row();
-        table.add(buttonMapType).size(150,60).padBottom(20).row();
-        table.add(buttonGameSpeed).size(150,60).padBottom(20).row();
+        table.add(buttonMapType).size(desiredWidth,desiredHeight).padBottom(20).row();
+        table.add(buttonGameSpeed).size(desiredWidth,desiredHeight).padBottom(20).row();
         table.add(title2).padBottom(40).row();
-        table.add(buttonRandom).size(150,60).padBottom(20).row();
-        table.add(buttonFriend).size(150,60).padBottom(20).row();
-        table.add(buttonLocal).size(150,60).padBottom(20).row();
-        table.add(buttonStartGame).size(150,60).padBottom(20).row();
+        table.add(buttonRandom).size(desiredWidth,desiredHeight).padBottom(20).row();
+        table.add(buttonFriend).size(desiredWidth,desiredHeight).padBottom(20).row();
+        table.add(buttonLocal).size(desiredWidth,desiredHeight).padBottom(20).row();
+        table.add(buttonStartGame).size(desiredWidth,desiredHeight).padBottom(20).row();
 
         table.setFillParent(true);
         stage.addActor(table);
