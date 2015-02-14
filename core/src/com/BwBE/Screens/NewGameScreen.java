@@ -31,7 +31,7 @@ public class NewGameScreen implements Screen{
 			buttonStartGame = new TextButton("Start Game", skin, "default");
 	private Label title = new Label("Choose your game style", skin, "default"),
 					title2 = new Label("Whom to play?", skin, "default");
-	
+	boolean isFast, isIslands;
 	
 	
 	public NewGameScreen(BwBE game) {
@@ -41,6 +41,9 @@ public class NewGameScreen implements Screen{
 	
 	@Override
 	public void show() {	
+		
+		isFast = false;
+		isIslands = false;
 		
 		buttonMenu.addListener(new ClickListener(){
             @Override
@@ -69,14 +72,25 @@ public class NewGameScreen implements Screen{
         buttonMapType.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                buttonMapType.setText("Islands Map");
-                //future work: toggle between islands and classic.  Store the chosen setting.
+            	isIslands = !isIslands;
+                if (isIslands) {
+                	buttonMapType.setText("Islands Map");
+                } else {
+                	buttonMapType.setText("Classic Map"); 
+                }
             }
         });
         buttonGameSpeed.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                buttonGameSpeed.setText("Speed Game");
+            	isFast = !isFast;
+                if (isFast) {
+                	buttonGameSpeed.setText("Classic Game");
+                } else {
+                	buttonGameSpeed.setText("Speed Game"); 
+                }
+                
+                //buttonGameSpeed.setText("Speed Game");
                 //future work: toggle between classic and speed.  Store the chosen setting.
             }
         });
