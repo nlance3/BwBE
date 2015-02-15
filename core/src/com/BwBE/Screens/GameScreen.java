@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -22,18 +23,19 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class GameScreen implements Screen{
 
-
+	//stuff for background that's common across all screens
+	private Batch batch;
 	
 	private BwBE game;
 	public ActionResolver actionResolver;
-	private Batch batch;
 	private Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 	private Stage stage = new Stage();
-	private Table table = new Table();
-	private Sprite bg;
+
 	private Label title = new Label("This is the where the game play happens :)", skin, "default");
 	
-	
+	private Image[][] boardTiles = new Image[9][9];
+	private TextureRegion tileTR;
+    private Table board = new Table();
 	
 	public GameScreen(BwBE game) {
 		this.game = game;
@@ -42,19 +44,46 @@ public class GameScreen implements Screen{
 	
 	@Override
 	public void show() {	
-		bg = new Sprite(AssetLoader.background);
 		batch = stage.getBatch();
-		bg.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		
-		
-		
-		
-      //The elements are displayed in the order you add them.
-        //The first appear on top, the last at the bottom.
-       // table.add(title).padBottom(40).row();
+	    board.setFillParent(true);
+	    stage.addActor(board);
+	    board.setDebug(true);
 
-        //table.setFillParent(true);
-        //stage.addActor(table);
+		
+		int width = Gdx.graphics.getWidth();
+		int height = Gdx.graphics.getHeight();
+		int tileWidth = (int)Math.floor(width/9) ;
+		int boardWidth = tileWidth * 9;
+		int boardHeight = tileWidth * 9;
+		System.out.println(tileWidth);
+
+		int LRPadding = (width - boardWidth)/2; 
+		int UDPadding = (height - boardWidth)/2; 
+
+		System.out.println(LRPadding);
+
+		board.padLeft(LRPadding);
+		board.padRight(LRPadding);
+
+		
+		tileTR = new TextureRegion(AssetLoader.tileTexture, 0,0,25,25);
+
+		for(int i=0;i<9;i++) {
+			for(int j=0;j<9;j++){
+				//System.out.println("setting " + i + j + " to 0");
+				boardTiles[i][j] = new Image(tileTR);
+				//boardTiles[i][j].
+				board.add(boardTiles[i][j]);
+			}
+			board.row();
+		}
+
+		
+		
+		
+		
+		
+	
 
         //Gdx.input.setInputProcessor(stage);
 		
@@ -67,14 +96,14 @@ public class GameScreen implements Screen{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act();
 		batch.begin();
-		bg.draw(batch);
-		batch.end();
+		AssetLoader.bgSprite.draw(batch);
+		
+
+	
+		
+		
+		batch.end();			
 		stage.draw();
-		
-		
-		
-		
-		
 	}
 
 	@Override
