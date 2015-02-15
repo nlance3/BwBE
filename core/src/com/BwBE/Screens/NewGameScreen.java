@@ -132,6 +132,7 @@ public class NewGameScreen implements Screen{
 
 	@Override
 	public void render(float delta) {		
+		AssetLoader.update();
 		batch.begin();
 		AssetLoader.bgSprite.draw(batch);
 		batch.end();

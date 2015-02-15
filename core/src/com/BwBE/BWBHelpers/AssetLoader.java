@@ -35,4 +35,11 @@ public class AssetLoader {
 		// We must dispose of the texture when we are finished.
 		logoTexture.dispose();
 	}
+	
+	public static void update() {
+		// Since we're using settings from here derived from game height/width update everything when called.
+		bgSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+			
+	}
 }

@@ -20,6 +20,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Scaling;
 
 public class GameScreen implements Screen{
 
@@ -34,7 +36,7 @@ public class GameScreen implements Screen{
 	private Label title = new Label("This is the where the game play happens :)", skin, "default");
 	
 	private Image[][] boardTiles = new Image[9][9];
-	private TextureRegion tileTR;
+	private TextureRegionDrawable tileTR;
     private Table board = new Table();
 	
 	public GameScreen(BwBE game) {
@@ -64,16 +66,21 @@ public class GameScreen implements Screen{
 
 		board.padLeft(LRPadding);
 		board.padRight(LRPadding);
+		board.padTop(UDPadding);
+		board.padBottom(UDPadding);
 
 		
-		tileTR = new TextureRegion(AssetLoader.tileTexture, 0,0,25,25);
+		tileTR = new TextureRegionDrawable(new TextureRegion(AssetLoader.tileTexture, 0,0,100,100));
 
 		for(int i=0;i<9;i++) {
 			for(int j=0;j<9;j++){
 				//System.out.println("setting " + i + j + " to 0");
-				boardTiles[i][j] = new Image(tileTR);
-				//boardTiles[i][j].
+				boardTiles[i][j] = new Image();
+				boardTiles[i][j].setScaling(Scaling.fit);
+				boardTiles[i][j].setDrawable(tileTR);
+				
 				board.add(boardTiles[i][j]);
+				
 			}
 			board.row();
 		}
