@@ -8,8 +8,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class AssetLoader {
 	
-	public static Texture logoTexture, backgroundTexture, tileTexture, carrierTexture;
-	public static TextureRegion logo, background, tileTR, carrierTR;
+	public static Texture logoTexture, backgroundTexture, tileTexture, carrierTexture, bshipTexture, subTexture, scoutTexture, fisherTexture;
+	public static TextureRegion logo, background, tileTR, carrierTR, bshipTR, subTR, scoutTR, fisherTR;
 	public static Sprite bgSprite;
 	
 	public static void load() {
@@ -33,7 +33,18 @@ public class AssetLoader {
 		carrierTexture = new Texture(Gdx.files.internal("data/carrier.png"));
 		carrierTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		carrierTR = new TextureRegion(carrierTexture);
-		
+		bshipTexture = new Texture(Gdx.files.internal("data/battleship.png"));
+		bshipTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		bshipTR = new TextureRegion(bshipTexture);
+		subTexture = new Texture(Gdx.files.internal("data/sub.png"));
+		subTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		subTR = new TextureRegion(subTexture);
+		scoutTexture = new Texture(Gdx.files.internal("data/scout.png"));
+		scoutTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		scoutTR = new TextureRegion(scoutTexture);
+		fisherTexture = new Texture(Gdx.files.internal("data/fisherman.png"));
+		fisherTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		fisherTR = new TextureRegion(fisherTexture);
 	}
 	
 	public static void dispose() {

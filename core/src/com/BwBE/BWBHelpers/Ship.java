@@ -14,10 +14,15 @@ public class Ship {
 	
 	public Image shipImage;
 	public boolean isPlaced;
-	public  int x,y,d,sp;
+	public int x,y,d,sp;
 	
-	public Ship(TextureRegion image, int spaces) {
+	public Ship(TextureRegion image, int spaces, float scaling) {
 		shipImage = new Image(image);
+		System.out.println(shipImage.getHeight());
+		shipImage.setScale(scaling);
+		//System.out.println(scaling);
+
+		//shipImage.setOrigin(18,18);
 		sp = spaces;
 		isPlaced = false;
 	}
@@ -30,11 +35,11 @@ public class Ship {
 		d=dir;
 		isPlaced = true;
 		if(d == 1){
-			y = originy - sp;
+			y = originy;
 			x = originx;
 			shipImage.rotateBy(90);
 		} else if(d == 2){
-			x = originx - sp;
+			x = originx;
 			y = originy;
 			shipImage.rotateBy(180);
 		} else if(d == 3){

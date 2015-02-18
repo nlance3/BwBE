@@ -43,7 +43,7 @@ public class GameScreen implements Screen{
     
 	public GameScreen(BwBE game) {
 		this.actionResolver = BwBE.actionResolver;
-		shipCount = 2;
+		shipCount = 4;
 	}
 	
 	@Override
@@ -51,19 +51,17 @@ public class GameScreen implements Screen{
 		batch = stage.getBatch();
 	    board.setFillParent(true);
 	    stage.addActor(board);
-	    board.setDebug(true);
+	    //board.setDebug(false);
 
 		
 		int width = Gdx.graphics.getWidth();
 		int height = Gdx.graphics.getHeight();
 		tileWidth = (int)Math.floor(width/10);
 		int boardWidth = tileWidth * 9;
-		System.out.println(tileWidth);
 
 		int LRPadding = (width - boardWidth)/2; 
 		int UDPadding = (height - boardWidth)/2; 
 
-		System.out.println(LRPadding);
 
 		board.padLeft(LRPadding);
 		board.padRight(LRPadding);
@@ -85,16 +83,23 @@ public class GameScreen implements Screen{
 			}
 			board.row();
 		}
-		ships[1] = new Ship(AssetLoader.carrierTR,5);
+
+		TextureRegion[] TRs = new TextureRegion[5];
+		TRs[0] = AssetLoader.carrierTR;
+		TRs[1] = AssetLoader.bshipTR;
+		TRs[2] = AssetLoader.subTR;
+		TRs[3] = AssetLoader.scoutTR;
+		TRs[4] = AssetLoader.fisherTR;
 
 		for(int i=0;i<shipCount;i++) {
-			ships[i] = new Ship(AssetLoader.carrierTR,5);
+			ships[i] = new Ship(TRs[i],5-i,(float) (tileWidth/100.0));
 			//Ships[i].setPlacement(0, 0, 0);
 			stage.addActor(ships[i].shipImage);
-			ships[i].shipImage.setScale((float) (tileWidth/100.0));
 		}
-		ships[0].setPlacement(0, 0, 0);
-		ships[1].setPlacement(3, 3, 3);
+		ships[0].setPlacement(4, 4, 0);
+		ships[1].setPlacement(4, 4, 1);
+		ships[2].setPlacement(4, 4, 2);
+		ships[3].setPlacement(4, 4, 3);
 
 	
 
