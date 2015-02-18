@@ -8,8 +8,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class AssetLoader {
 	
-	public static Texture logoTexture, backgroundTexture, tileTexture;
-	public static TextureRegion logo, background, tileTR;
+	public static Texture logoTexture, backgroundTexture, tileTexture, carrierTexture;
+	public static TextureRegion logo, background, tileTR, carrierTR;
 	public static Sprite bgSprite;
 	
 	public static void load() {
@@ -29,6 +29,11 @@ public class AssetLoader {
 		
 		tileTexture = new Texture(Gdx.files.internal("data/tile.png"));
 		tileTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		carrierTexture = new Texture(Gdx.files.internal("data/carrier.png"));
+		carrierTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		carrierTR = new TextureRegion(carrierTexture);
+		
 	}
 	
 	public static void dispose() {

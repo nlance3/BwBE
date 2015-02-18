@@ -2,6 +2,7 @@ package com.BwBE.Screens;
 
 import com.BwBE.BWBHelpers.ActionResolver;
 import com.BwBE.BWBHelpers.AssetLoader;
+import com.BwBE.BWBHelpers.Ship;
 import com.BwBE.game.BwBE;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -12,6 +13,8 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -28,20 +31,19 @@ public class GameScreen implements Screen{
 	//stuff for background that's common across all screens
 	private Batch batch;
 	
-	private BwBE game;
 	public ActionResolver actionResolver;
-	private Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 	private Stage stage = new Stage();
 
-	private Label title = new Label("This is the where the game play happens :)", skin, "default");
-	
 	private Image[][] boardTiles = new Image[9][9];
 	private TextureRegionDrawable tileTR;
     private Table board = new Table();
-	
+	private Ship[] ships = new Ship[4];
+	private int shipCount;
+	private int tileWidth;
+    
 	public GameScreen(BwBE game) {
-		this.game = game;
 		this.actionResolver = BwBE.actionResolver;
+		shipCount = 2;
 	}
 	
 	@Override
@@ -54,9 +56,8 @@ public class GameScreen implements Screen{
 		
 		int width = Gdx.graphics.getWidth();
 		int height = Gdx.graphics.getHeight();
-		int tileWidth = (int)Math.floor(width/9) ;
+		tileWidth = (int)Math.floor(width/10);
 		int boardWidth = tileWidth * 9;
-		int boardHeight = tileWidth * 9;
 		System.out.println(tileWidth);
 
 		int LRPadding = (width - boardWidth)/2; 
@@ -84,12 +85,17 @@ public class GameScreen implements Screen{
 			}
 			board.row();
 		}
+		ships[1] = new Ship(AssetLoader.carrierTR,5);
 
-		
-		
-		
-		
-		
+		for(int i=0;i<shipCount;i++) {
+			ships[i] = new Ship(AssetLoader.carrierTR,5);
+			//Ships[i].setPlacement(0, 0, 0);
+			stage.addActor(ships[i].shipImage);
+			ships[i].shipImage.setScale((float) (tileWidth/100.0));
+		}
+		ships[0].setPlacement(0, 0, 0);
+		ships[1].setPlacement(3, 3, 3);
+
 	
 
         //Gdx.input.setInputProcessor(stage);
@@ -101,16 +107,24 @@ public class GameScreen implements Screen{
 	public void render(float delta) {
 		Gdx.gl.glClearColor(1, 0, 1, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act();
+
 		batch.begin();
 		AssetLoader.bgSprite.draw(batch);
+		batch.end();
 		
+		Vector2 loc;
+		for(int i=0;i<shipCount;i++) {
 
-	
+			loc = boardTiles[ships[i].x][ships[i].y].localToStageCoordinates(new Vector2());
+			ships[i].shipImage.setX(loc.x);
+			ships[i].shipImage.setY(loc.y);
+		}
+			
 		
-		
-		batch.end();			
+		stage.act();
 		stage.draw();
+			
+
 	}
 
 	@Override
