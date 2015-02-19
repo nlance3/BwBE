@@ -92,6 +92,7 @@ public class GameScreen implements Screen{
 		TRs[4] = AssetLoader.fisherTR;
 
 		for(int i=0;i<shipCount;i++) {
+		//for(int i=0;i<1;i++) {
 			ships[i] = new Ship(TRs[i],5-i,(float) (tileWidth/100.0));
 			//Ships[i].setPlacement(0, 0, 0);
 			stage.addActor(ships[i].shipImage);
@@ -119,7 +120,7 @@ public class GameScreen implements Screen{
 		
 		Vector2 loc;
 		for(int i=0;i<shipCount;i++) {
-
+		//for(int i=0;i<1;i++) {
 			loc = boardTiles[ships[i].x][ships[i].y].localToStageCoordinates(new Vector2());
 			ships[i].shipImage.setX(loc.x);
 			ships[i].shipImage.setY(loc.y);

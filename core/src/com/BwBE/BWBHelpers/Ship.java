@@ -35,15 +35,15 @@ public class Ship {
 		d=dir;
 		isPlaced = true;
 		if(d == 1){
-			y = originy;
 			x = originx;
+			y = originy + 1;
 			shipImage.rotateBy(90);
 		} else if(d == 2){
-			x = originx;
-			y = originy;
+			x = originx - 1;
+			y = originy + 1;
 			shipImage.rotateBy(180);
 		} else if(d == 3){
-			x = originx;
+			x = originx - 1;
 			y = originy;
 			shipImage.rotateBy(270);
 		} else if(d == 0){
