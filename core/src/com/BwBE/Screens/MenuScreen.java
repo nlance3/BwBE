@@ -72,7 +72,7 @@ public class MenuScreen implements Screen{
         buttonToast.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                actionResolver.toastMe();
+                actionResolver.toastMe("Toast button!");
             }
         });
         buttonSettings.addListener(new ClickListener(){

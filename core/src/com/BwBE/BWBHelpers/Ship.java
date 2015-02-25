@@ -1,16 +1,13 @@
 package com.BwBE.BWBHelpers;
 
+import com.BwBE.Screens.GameScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.BwBE.BWBHelpers.AssetLoader;
 
 public class Ship {
-	public static Image shipSprite;
 	
 	public Sprite shipImage;
 	public boolean isPlaced;
@@ -37,40 +34,30 @@ public class Ship {
 		x = originx;
 		y = originy;
 		isPlaced = true;
-		if(d == 1){
-			dispx = originx;
-			dispy = originy + 1;
-			shipImage.setRotation(90);
-		} else if(d == 2){
-			dispx = originx - 1;
-			dispy = originy + 1;
-			shipImage.setRotation(180);
-		} else if(d == 3){
-			dispx = originx - 1;
-			dispy = originy;
-			shipImage.setRotation(270);
-		} else if(d == 0){
-			dispx = originx;
-			dispy = originy;
-		}		
+		shipImage.setRotation(d*90f);
+				
 	}
 	
 	
-	public void draw() {
+	public void draw(Batch batch) {
 		// Since we're using settings from here derived from game height/width update everything when called.
 		//if not placed
 		if(!this.isPlaced) {
 			
+		} else { 
+			this.setPosition(GameScreen.getTileX(this.x),GameScreen.getTileY(this.y));
+			shipImage.draw(batch); 
 		}
+		
 		
 	}
 
 	public void setPosition(int x, int y) {
-		// TODO Auto-generated method stub
-		float rot = shipImage.getRotation();
-		shipImage.setRotation(0);
-		shipImage.setPosition(x, y);
-		shipImage.setRotation(rot);
+		if(!this.isPlaced) {
+			
+		} else {shipImage.setPosition(x, y);}
+			
+		
 		
 	}
 }

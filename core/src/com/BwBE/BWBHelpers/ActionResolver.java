@@ -1,5 +1,5 @@
 package com.BwBE.BWBHelpers;
 
 public interface ActionResolver {
-	public void toastMe();
+	public void toastMe(final String message);
 }

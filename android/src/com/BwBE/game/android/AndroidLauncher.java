@@ -17,12 +17,12 @@ public class AndroidLauncher extends AndroidApplication implements ActionResolve
 		initialize(new BwBE(this), config);
 	}
 	
-
-	public void toastMe(){
+	@Override
+	public void toastMe(final String message){
 		try{
 		runOnUiThread(new Runnable(){
 			public void run(){
-				Toast.makeText(getApplicationContext(), "This is toast", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 			}
 		});
 		}catch (Exception e){

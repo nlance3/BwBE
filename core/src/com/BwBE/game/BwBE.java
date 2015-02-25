@@ -15,7 +15,7 @@ public class BwBE extends Game {
 	
 	@Override
 	public void create() {
-		actionResolver.toastMe();
+		actionResolver.toastMe("Created");
 		AssetLoader.load();
 		setScreen(new SplashScreen(this));
 		
