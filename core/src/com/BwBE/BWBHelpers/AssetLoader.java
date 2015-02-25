@@ -1,6 +1,7 @@
 package com.BwBE.BWBHelpers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -11,6 +12,7 @@ public class AssetLoader {
 	public static Texture logoTexture, backgroundTexture, tileTexture, carrierTexture, bshipTexture, subTexture, scoutTexture, fisherTexture;
 	public static TextureRegion logo, background, tileTR, carrierTR, bshipTR, subTR, scoutTR, fisherTR;
 	public static Sprite bgSprite;
+	public static FileHandle tilefh; 
 	
 	public static void load() {
 		
@@ -26,9 +28,10 @@ public class AssetLoader {
 		bgSprite = new Sprite(background);
 		bgSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
-		
-		tileTexture = new Texture(Gdx.files.internal("data/tile.png"));
+		tilefh = Gdx.files.internal("data/tile.png");
+		tileTexture = new Texture(tilefh);
 		tileTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		tileTR = new TextureRegion(AssetLoader.tileTexture, 0,0,100,100);
 		
 		carrierTexture = new Texture(Gdx.files.internal("data/carrier.png"));
 		carrierTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);

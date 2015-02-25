@@ -14,7 +14,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -32,75 +31,77 @@ public class GameScreen implements Screen{
 	private Batch batch;
 	
 	public ActionResolver actionResolver;
-	private Stage stage = new Stage();
 
 	private Image[][] boardTiles = new Image[9][9];
-	private TextureRegionDrawable tileTR;
-    private Table board = new Table();
+	private TextureRegion tileTR;
+    private Sprite[][] board = new Sprite[9][9];
 	private Ship[] ships = new Ship[4];
 	private int shipCount;
-	private int tileWidth;
+	private int tileWidth, LRPadding, UDPadding;
     
 	public GameScreen(BwBE game) {
 		this.actionResolver = BwBE.actionResolver;
 		shipCount = 4;
 	}
 	
+	public int getTileX(int x) {
+		return this.LRPadding + (x * this.tileWidth);
+	}
+	
+	public int getTileY(int y) {
+		return this.UDPadding + (y * this.tileWidth);
+	}
+	
+	public int getTileXx(int x) {
+		return this.LRPadding + (x * this.tileWidth);
+	}
+	
+	public int getTileYy(int y) {
+		return this.UDPadding + (y * this.tileWidth);
+	}
+	
+	
 	@Override
 	public void show() {	
-		batch = stage.getBatch();
-	    board.setFillParent(true);
-	    stage.addActor(board);
-	    //board.setDebug(false);
-
+		batch = new SpriteBatch();
+	    
+		
 		
 		int width = Gdx.graphics.getWidth();
 		int height = Gdx.graphics.getHeight();
 		tileWidth = (int)Math.floor(width/10);
 		int boardWidth = tileWidth * 9;
 
-		int LRPadding = (width - boardWidth)/2; 
-		int UDPadding = (height - boardWidth)/2; 
-
-
-		board.padLeft(LRPadding);
-		board.padRight(LRPadding);
-		board.padTop(UDPadding);
-		board.padBottom(UDPadding);
+		LRPadding = (width - boardWidth)/2; 
+		UDPadding = (height - boardWidth)/2; 
 
 		
-		tileTR = new TextureRegionDrawable(new TextureRegion(AssetLoader.tileTexture, 0,0,100,100));
-
 		for(int i=0;i<9;i++) {
 			for(int j=0;j<9;j++){
 				//System.out.println("setting " + i + j + " to 0");
-				boardTiles[i][j] = new Image();
-				boardTiles[i][j].setScaling(Scaling.fit);
-				boardTiles[i][j].setDrawable(tileTR);
-				
-				board.add(boardTiles[i][j]);
+				board[i][j] = new Sprite(new Texture (AssetLoader.tilefh));
+				board[i][j].setSize(tileWidth, tileWidth);
+				System.out.println(this.getTileX(i) + " : " + this.getTileY(j));
+				board[i][j].setPosition(this.getTileX(i),this.getTileY(j));
 				
 			}
-			board.row();
 		}
 
-		TextureRegion[] TRs = new TextureRegion[5];
-		TRs[0] = AssetLoader.carrierTR;
-		TRs[1] = AssetLoader.bshipTR;
-		TRs[2] = AssetLoader.subTR;
-		TRs[3] = AssetLoader.scoutTR;
-		TRs[4] = AssetLoader.fisherTR;
+		Texture[] TRs = new Texture[5];
+		TRs[0] = AssetLoader.carrierTexture;
+		TRs[1] = AssetLoader.bshipTexture;
+		TRs[2] = AssetLoader.subTexture;
+		TRs[3] = AssetLoader.scoutTexture;
+		TRs[4] = AssetLoader.fisherTexture;
 
 		for(int i=0;i<shipCount;i++) {
 		//for(int i=0;i<1;i++) {
-			ships[i] = new Ship(TRs[i],5-i,(float) (tileWidth/100.0));
-			//Ships[i].setPlacement(0, 0, 0);
-			stage.addActor(ships[i].shipImage);
+			ships[i] = new Ship(TRs[i],5-i,tileWidth);
 		}
 		ships[0].setPlacement(4, 4, 0);
-		ships[1].setPlacement(4, 4, 1);
-		ships[2].setPlacement(4, 4, 2);
-		ships[3].setPlacement(4, 4, 3);
+		ships[1].setPlacement(3, 5, 1);
+		ships[2].setPlacement(2, 4, 2);
+		ships[3].setPlacement(3, 3, 3);
 
 	
 
@@ -116,20 +117,28 @@ public class GameScreen implements Screen{
 
 		batch.begin();
 		AssetLoader.bgSprite.draw(batch);
-		batch.end();
-		
-		Vector2 loc;
-		for(int i=0;i<shipCount;i++) {
-		//for(int i=0;i<1;i++) {
-			loc = boardTiles[ships[i].x][ships[i].y].localToStageCoordinates(new Vector2());
-			ships[i].shipImage.setX(loc.x);
-			ships[i].shipImage.setY(loc.y);
+		for(int i=0;i<9;i++) {
+			for(int j=0;j<9;j++){
+				board[i][j].draw(batch);
+			}
 		}
-			
 		
-		stage.act();
-		stage.draw();
+		
+		
+		//for(int i=0;i<shipCount;i++) {
+		for(int i=0;i<shipCount;i++) {
+			//System.out.println(ships[i].shipImage.getOriginX() + " " + ships[i].shipImage.getOriginY());
+			ships[i].shipImage.setPosition(this.getTileX(ships[i].x),this.getTileY(ships[i].y));
+			//ships[i].shipImage.setOrigin(this.getTileX(ships[i].x),this.getTileY(ships[i].y));
+			//ships[i].shipImage.setPosition(0,0);
+
+			ships[i].shipImage.draw(batch);
 			
+		}
+		batch.end();
+
+		
+	
 
 	}
 
@@ -160,7 +169,6 @@ public class GameScreen implements Screen{
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
-		stage.dispose();
 		
 	}
 

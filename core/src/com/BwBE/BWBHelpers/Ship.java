@@ -12,14 +12,15 @@ import com.BwBE.BWBHelpers.AssetLoader;
 public class Ship {
 	public static Image shipSprite;
 	
-	public Image shipImage;
+	public Sprite shipImage;
 	public boolean isPlaced;
-	public int x,y,d,sp;
+	public int x,y,d,sp,dispx,dispy;
 	
-	public Ship(TextureRegion image, int spaces, float scaling) {
-		shipImage = new Image(image);
+	public Ship(Texture txr, int spaces, float size) {
+		shipImage = new Sprite(txr);
 		System.out.println(shipImage.getHeight());
-		shipImage.setScale(scaling);
+		shipImage.setSize(size*spaces,size);
+		shipImage.setOrigin(size/2,size/2);
 		//System.out.println(scaling);
 
 		//shipImage.setOrigin(18,18);
@@ -33,22 +34,24 @@ public class Ship {
 	//dir 3 = down
 	public void setPlacement(int originx, int originy, int dir) {
 		d=dir;
+		x = originx;
+		y = originy;
 		isPlaced = true;
 		if(d == 1){
-			x = originx;
-			y = originy + 1;
-			shipImage.rotateBy(90);
+			dispx = originx;
+			dispy = originy + 1;
+			shipImage.setRotation(90);
 		} else if(d == 2){
-			x = originx - 1;
-			y = originy + 1;
-			shipImage.rotateBy(180);
+			dispx = originx - 1;
+			dispy = originy + 1;
+			shipImage.setRotation(180);
 		} else if(d == 3){
-			x = originx - 1;
-			y = originy;
-			shipImage.rotateBy(270);
+			dispx = originx - 1;
+			dispy = originy;
+			shipImage.setRotation(270);
 		} else if(d == 0){
-			x = originx;
-			y = originy;
+			dispx = originx;
+			dispy = originy;
 		}		
 	}
 	
@@ -59,6 +62,15 @@ public class Ship {
 		if(!this.isPlaced) {
 			
 		}
+		
+	}
+
+	public void setPosition(int x, int y) {
+		// TODO Auto-generated method stub
+		float rot = shipImage.getRotation();
+		shipImage.setRotation(0);
+		shipImage.setPosition(x, y);
+		shipImage.setRotation(rot);
 		
 	}
 }
