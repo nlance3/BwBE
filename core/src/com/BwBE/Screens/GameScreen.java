@@ -3,6 +3,7 @@ package com.BwBE.Screens;
 import com.BwBE.BWBHelpers.ActionResolver;
 import com.BwBE.BWBHelpers.AssetLoader;
 import com.BwBE.BWBHelpers.Ship;
+import com.BwBE.BWBHelpers.Tile;
 import com.BwBE.game.BwBE;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
@@ -24,14 +25,14 @@ public class GameScreen implements Screen,InputProcessor {
 	
 	public ActionResolver actionResolver;
 	
-	private Sprite[][] board = new Sprite[9][9];
-	private Ship[] ships = new Ship[4];
-	private int shipCount, activeShip;
+	private Tile[][] board = new Tile[9][9];
+	private Ship[] ships = new Ship[5];
+	private int shipCount, activeShip, newActiveShip;
 	private static int tileWidth, LRPadding, UDPadding;
     
 	public GameScreen(BwBE game) {
 		this.actionResolver = BwBE.actionResolver;
-		shipCount = 2;
+		shipCount = 5;
 		activeShip = -1;
 		batch = new SpriteBatch();
 	    
@@ -49,10 +50,10 @@ public class GameScreen implements Screen,InputProcessor {
 		for(int i=0;i<9;i++) {
 			for(int j=0;j<9;j++){
 				//System.out.println("setting " + i + j + " to 0");
-				board[i][j] = new Sprite(new Texture (AssetLoader.tilefh));
+				board[i][j] = new Tile(new Texture (AssetLoader.tilefh));
 				board[i][j].setSize(tileWidth, tileWidth);
-				System.out.println(this.getTileX(i) + " : " + this.getTileY(j));
-				board[i][j].setPosition(this.getTileX(i),this.getTileY(j));
+				System.out.println(GameScreen.getTileX(i) + " : " + GameScreen.getTileY(j));
+				board[i][j].setPosition(GameScreen.getTileX(i),GameScreen.getTileY(j));
 				
 			}
 		}
@@ -67,12 +68,8 @@ public class GameScreen implements Screen,InputProcessor {
 		for(int i=0;i<shipCount;i++) {
 		//for(int i=0;i<1;i++) {
 			ships[i] = new Ship(TRs[i],5-i,tileWidth);
+			ships[i].setPlacement(0, i, 0);
 		}
-		ships[0].setPlacement(4, 4, 0);
-		ships[1].setPlacement(3, 5, 1);
-		//ships[2].setPlacement(2, 4, 2);
-		//ships[3].setPlacement(3, 3, 3);
-
 		
 		
 	}
@@ -112,7 +109,6 @@ public class GameScreen implements Screen,InputProcessor {
 				board[i][j].draw(batch);
 			}
 		}
-		
 		
 		
 		//for(int i=0;i<shipCount;i++) {
@@ -179,28 +175,30 @@ public class GameScreen implements Screen,InputProcessor {
 		return false;
 	}
 
+	/*on a touch check the old state
+	 * Check to see if the touch down is on a ship. If it is change the active ship
+	 * If not see if we have an active ship
+	 *  If so; can draw a ship from the touch point
+	 *  If not:unselect active ship 
+	 */
+	
 	private Vector2 firstTouch = new Vector2();
 	private Vector2 deltaTouch = new Vector2();
 	private boolean hit = false;
-	private boolean possDraw = false;
-
+	private boolean possDraw = false, newPossDraw = false;
+	
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		// TODO Auto-generated method stub
 		screenY = Gdx.graphics.getHeight() - screenY;
 		System.out.println(screenX + "x" + screenY);
-		
-		
-		
-		if(activeShip >= 0) {
-			firstTouch.x=screenX;
-			firstTouch.y=screenY;
-			if(screenX>=LRPadding && screenX <=Gdx.graphics.getWidth()-LRPadding && screenY>=UDPadding && screenY<=Gdx.graphics.getHeight()-UDPadding) {
-				possDraw = true;
-			}
-		} else {hit = false; possDraw=false;}
-		
+		firstTouch.x=screenX;
+		firstTouch.y=screenY;
+		hit = false;
+		newActiveShip = -1;
+		//check for a hit first:
 		for(int i=0;i<shipCount;i++) {
+			if(i==activeShip){continue;}
 			Rectangle rect = ships[i].shipImage.getBoundingRectangle();
 			int llx = Math.round(rect.x);
 			int lly = Math.round(rect.y);
@@ -210,21 +208,23 @@ public class GameScreen implements Screen,InputProcessor {
 			actionResolver.toastMe("@" + llx + "x" + lly + " : " + urx + "x" + ury);
 			if(screenX > llx && screenX < urx && screenY > lly && screenY < ury) {
 				hit = true;
-				if(activeShip >= 0) {
-					ships[activeShip].shipImage.setColor(Color.WHITE);
-				}
-				ships[i].shipImage.setColor(Color.RED);
-				activeShip = i;
+				newActiveShip = i;
 			}
 		}
-		if(!hit && activeShip >= 0) {ships[activeShip].shipImage.setColor(Color.WHITE); activeShip = -1;}
+		
+		if(activeShip >= 0 && !hit) {
+			if(screenX>=LRPadding && screenX <=Gdx.graphics.getWidth()-LRPadding && screenY>=UDPadding && screenY<=Gdx.graphics.getHeight()-UDPadding) {
+				possDraw = true;
+			}
+		}
+		
 		return false;
 	}
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		screenY = Gdx.graphics.getHeight() - screenY;
-		if(!possDraw) {return false;}
+		if(!possDraw || hit) {updateState(); return false;}
 		// TODO Auto-generated method stub
 		deltaTouch.x = screenX - firstTouch.x;
 		deltaTouch.y = screenY - firstTouch.y;
@@ -264,7 +264,23 @@ public class GameScreen implements Screen,InputProcessor {
 
 		}
 		
+		updateState();
 		return false;
+	}
+	
+	private void updateState() {
+		possDraw = newPossDraw;
+		if(activeShip != newActiveShip){
+			if(activeShip>=0){
+				ships[activeShip].shipImage.setColor(Color.WHITE);
+			}
+			if(newActiveShip>=0){
+				ships[newActiveShip].shipImage.setColor(Color.RED);
+			}
+		}
+		activeShip = newActiveShip;
+		
+		hit=false;
 	}
 	
 	
