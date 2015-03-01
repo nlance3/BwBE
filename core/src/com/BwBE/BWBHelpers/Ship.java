@@ -61,6 +61,8 @@ public class Ship {
 		
 		isPlaced = true;
 		shipImage.setRotation(d*90f);
+		setPosition(GameScreen.getTileX(x),GameScreen.getTileY(y));
+
 				
 	}
 	
@@ -71,7 +73,6 @@ public class Ship {
 		if(!this.isPlaced) {
 			setPosition(upx,upy);
 		} else { 
-			setPosition(GameScreen.getTileX(x),GameScreen.getTileY(y));
 			shipImage.draw(batch); 
 		}
 		

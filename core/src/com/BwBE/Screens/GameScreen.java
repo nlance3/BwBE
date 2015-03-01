@@ -82,11 +82,11 @@ public class GameScreen implements Screen,InputProcessor {
 		return GameScreen.UDPadding + (y * GameScreen.tileWidth);
 	}
 	
-	public int getTileXc(int x) {
+	public static int getTileXc(int x) {
 		return GameScreen.LRPadding + (x * GameScreen.tileWidth) + tileWidth/2;
 	}
 	
-	public int getTileYc(int y) {
+	public static int getTileYc(int y) {
 		return GameScreen.UDPadding + (y * GameScreen.tileWidth) + tileWidth/2;
 	}
 	
@@ -115,6 +115,7 @@ public class GameScreen implements Screen,InputProcessor {
 		for(int i=0;i<shipCount;i++) {
 			ships[i].draw(batch);
 		}
+		if(activeShip>=0){ships[activeShip].draw(batch);}
 		batch.end();
 
 		
@@ -154,24 +155,18 @@ public class GameScreen implements Screen,InputProcessor {
 	@Override
 	public boolean keyDown(int keycode) {
 		// TODO Auto-generated method stub
-		System.out.println("keyDonwn " + keycode );
-
 		return false;
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
 		// TODO Auto-generated method stub
-		System.out.println("keyUp " + keycode );
-
 		return false;
 	}
 
 	@Override
 	public boolean keyTyped(char character) {
 		// TODO Auto-generated method stub
-		System.out.println("keyTyped " + character );
-
 		return false;
 	}
 
@@ -184,7 +179,8 @@ public class GameScreen implements Screen,InputProcessor {
 	
 	private Vector2 firstTouch = new Vector2();
 	private Vector2 deltaTouch = new Vector2();
-	private boolean hit = false;
+	private Vector2 touchDelta = new Vector2();
+	private boolean hit = false, hitOnActive = false;
 	private boolean possDraw = false, newPossDraw = false;
 	
 	@Override
@@ -195,19 +191,26 @@ public class GameScreen implements Screen,InputProcessor {
 		firstTouch.x=screenX;
 		firstTouch.y=screenY;
 		hit = false;
+		hitOnActive = false;
 		newActiveShip = -1;
 		//check for a hit first:
 		for(int i=0;i<shipCount;i++) {
-			if(i==activeShip){continue;}
 			Rectangle rect = ships[i].shipImage.getBoundingRectangle();
 			int llx = Math.round(rect.x);
 			int lly = Math.round(rect.y);
 			int urx = Math.round(rect.x+rect.width);
 			int ury = Math.round(rect.y+rect.height);
 			
-			actionResolver.toastMe("@" + llx + "x" + lly + " : " + urx + "x" + ury);
+			//actionResolver.toastMe("@" + llx + "x" + lly + " : " + urx + "x" + ury);
 			if(screenX > llx && screenX < urx && screenY > lly && screenY < ury) {
 				hit = true;
+				if(i==activeShip){
+					hitOnActive = true;
+					touchDelta.x=screenX-ships[i].shipImage.getX();
+					touchDelta.y=screenY-ships[i].shipImage.getY();
+					System.out.println(touchDelta.x);
+					System.out.println(touchDelta.y);
+				} else {hit=true;}
 				newActiveShip = i;
 			}
 		}
@@ -224,13 +227,33 @@ public class GameScreen implements Screen,InputProcessor {
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		screenY = Gdx.graphics.getHeight() - screenY;
-		if(!possDraw || hit) {updateState(); return false;}
+		if(!(possDraw  || hitOnActive) || firstTouch.dst2(new Vector2(screenX,screenY)) <9) {updateState(); System.out.println("skipping"); return false;}
 		// TODO Auto-generated method stub
 		deltaTouch.x = screenX - firstTouch.x;
 		deltaTouch.y = screenY - firstTouch.y;
-		if(activeShip >= 0) {
+		if(hitOnActive) {
+			System.out.println("HOA");
+			Vector2 test = new Vector2();
+			float dst2,min = Float.MAX_VALUE;
+			int x=0,y=0;
+			for(int i=0;i<9;i++){
+				for(int j=0;j<9;j++){
+					test.x=GameScreen.getTileX(i)+touchDelta.x;
+					test.y=GameScreen.getTileY(j)+touchDelta.y;
+					dst2 = test.dst2(screenX,screenY);
+					if(Math.min(dst2,min) == dst2) {
+						min = dst2;
+						x=i;
+						y=j;
+					}
+				}
+			}
+			ships[activeShip].setPlacement(x, y, ships[activeShip].d);
+		} else if(activeShip >= 0) {
 			float angle = deltaTouch.angle();
 			int dir;
+			//System.out.println(deltaTouch.x+" "+deltaTouch.y);
+
 			if(angle<45 || angle >= 315) {
 				dir = 0;
 			} else if (angle<135 && angle >= 45) {
@@ -240,6 +263,7 @@ public class GameScreen implements Screen,InputProcessor {
 			} else {
 				dir = 3;
 			}
+		
 			System.out.println(angle + " " + dir);
 			if(possDraw) {
 				Vector2 test = new Vector2();
@@ -247,8 +271,8 @@ public class GameScreen implements Screen,InputProcessor {
 				int x=0,y=0;
 				for(int i=0;i<9;i++){
 					for(int j=0;j<9;j++){
-						test.x=this.getTileXc(i);
-						test.y=this.getTileYc(j);
+						test.x=GameScreen.getTileXc(i);
+						test.y=GameScreen.getTileYc(j);
 						dst2 = test.dst2(firstTouch);
 						if(Math.min(dst2,min) == dst2) {
 							min = dst2;
@@ -259,8 +283,8 @@ public class GameScreen implements Screen,InputProcessor {
 				}
 				ships[activeShip].setPlacement(x, y, dir);
 			}
-			possDraw = false;
-			
+			newPossDraw = false;
+			newActiveShip = activeShip;
 
 		}
 		
@@ -270,6 +294,7 @@ public class GameScreen implements Screen,InputProcessor {
 	
 	private void updateState() {
 		possDraw = newPossDraw;
+		
 		if(activeShip != newActiveShip){
 			if(activeShip>=0){
 				ships[activeShip].shipImage.setColor(Color.WHITE);
@@ -279,15 +304,69 @@ public class GameScreen implements Screen,InputProcessor {
 			}
 		}
 		activeShip = newActiveShip;
-		
+		hitOnActive = false;
 		hit=false;
+		
+		//zero the board
+		for(int i=0;i<9;i++) {
+			for(int j=0;j<9;j++){
+				board[i][j].status = 0;
+			}
+		}
+		
+		for(int i=0;i<shipCount;i++){
+			if(!ships[i].isPlaced){continue;}
+			int d = ships[i].d;
+			int sp = ships[i].sp;
+			int x = ships[i].x;
+			int y = ships[i].y;
+			for(int j=0; j<sp; j++){
+				switch(d){
+				case 0:
+					board[x+j][y].status++;
+					break;
+				case 1:
+					board[x][y+j].status++;
+					break;
+				case 2:
+					board[x-j][y].status++;
+					break;
+				case 3:
+					board[x][y-j].status++;
+					break;
+				}
+			}
+		}
+		printBoard();
+		boolean valid = checkState();
+		
 	}
 	
+	public void printBoard(){
+		for(int i=8;i>=0;i--) {
+			for(int j=0;j<9;j++){
+				System.out.print(board[j][i].status);
+			}
+			System.out.println();
+		}
+	}
+	
+	public boolean checkState() {
+		for(int i=0;i<9;i++) {
+			for(int j=0;j<9;j++){
+				if(board[i][j].status>1) {return false;}
+			}
+		}
+		return true;
+	}
 	
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		// TODO Auto-generated method stub
-		if(activeShip >= 0) {
+		screenY = Gdx.graphics.getHeight() - screenY;
+		if(hitOnActive) {
+			System.out.println(activeShip);
+			ships[activeShip].setPosition(screenX-(int)touchDelta.x, screenY-(int)touchDelta.y);
 		}
 		
 		return false;
