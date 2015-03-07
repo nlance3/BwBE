@@ -34,7 +34,7 @@ public class GameScreen implements Screen,InputProcessor {
 	
 	public GameScreen(BwBE game) {
 		this.actionResolver = BwBE.actionResolver;
-		shipCount = 5;
+		shipCount = 4;
 		activeShip = -1;
 		batch = new SpriteBatch();
 	    
@@ -70,9 +70,9 @@ public class GameScreen implements Screen,InputProcessor {
 		Vector2 unplacedLocs[] = new Vector2[5];
 		unplacedLocs[0] = new Vector2(LRPadding,y-UDPadding/3);
 		unplacedLocs[1] = new Vector2(LRPadding,y-2*UDPadding/3);
-		unplacedLocs[2] = new Vector2(LRPadding+6*tileWidth,y-UDPadding/3);
-		unplacedLocs[3] = new Vector2(LRPadding+5*tileWidth,y-2*UDPadding/3);
-		unplacedLocs[4] = new Vector2(LRPadding+8*tileWidth,y-2*UDPadding/3);
+		unplacedLocs[2] = new Vector2(LRPadding+5*tileWidth,y-2*UDPadding/3);
+		unplacedLocs[3] = new Vector2(LRPadding+6*tileWidth,y-UDPadding/3);
+		//unplacedLocs[4] = new Vector2(LRPadding+8*tileWidth,y-2*UDPadding/3);
 
 		
 		for(int i=0;i<shipCount;i++) {
