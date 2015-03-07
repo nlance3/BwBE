@@ -16,7 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.BwBE.BWBHelpers.AssetLoader;
 
-public class NewGameScreen implements Screen{
+public class GameOptions implements Screen{
 	private BwBE game;
 	public ActionResolver actionResolver;
 	
@@ -37,7 +37,7 @@ public class NewGameScreen implements Screen{
 	boolean isFast, isIslands;
 	
 	
-	public NewGameScreen(BwBE game) {
+	public GameOptions(BwBE game) {
 		this.game = game;
 		this.actionResolver = BwBE.actionResolver;
 	}

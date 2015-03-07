@@ -2,6 +2,7 @@ package com.BwBE.Screens;
 
 import com.BwBE.BWBHelpers.ActionResolver;
 import com.BwBE.BWBHelpers.AssetLoader;
+import com.BwBE.BWBHelpers.Button;
 import com.BwBE.BWBHelpers.Ship;
 import com.BwBE.BWBHelpers.Tile;
 import com.BwBE.game.BwBE;
@@ -27,16 +28,17 @@ public class GameScreen implements Screen,InputProcessor {
 	
 	private Tile[][] board = new Tile[9][9];
 	private Ship[] ships = new Ship[5];
-	private int shipCount, activeShip, newActiveShip;
+	private int shipCount, activeShip, newActiveShip, buttonCount;
 	private static int tileWidth, LRPadding, UDPadding;
-    
+    private Button[] buttons = new Button[5];
+	
 	public GameScreen(BwBE game) {
 		this.actionResolver = BwBE.actionResolver;
 		shipCount = 5;
 		activeShip = -1;
 		batch = new SpriteBatch();
 	    
-		
+		buttonCount = 1 ;
 		
 		int width = Gdx.graphics.getWidth();
 		int height = Gdx.graphics.getHeight();
@@ -64,11 +66,28 @@ public class GameScreen implements Screen,InputProcessor {
 		TRs[2] = AssetLoader.subTexture;
 		TRs[3] = AssetLoader.scoutTexture;
 		TRs[4] = AssetLoader.fisherTexture;
+		int y = Gdx.graphics.getHeight();
+		Vector2 unplacedLocs[] = new Vector2[5];
+		unplacedLocs[0] = new Vector2(LRPadding,y-UDPadding/3);
+		unplacedLocs[1] = new Vector2(LRPadding,y-2*UDPadding/3);
+		unplacedLocs[2] = new Vector2(LRPadding+6*tileWidth,y-UDPadding/3);
+		unplacedLocs[3] = new Vector2(LRPadding+5*tileWidth,y-2*UDPadding/3);
+		unplacedLocs[4] = new Vector2(LRPadding+8*tileWidth,y-2*UDPadding/3);
 
+		
 		for(int i=0;i<shipCount;i++) {
 		//for(int i=0;i<1;i++) {
-			ships[i] = new Ship(TRs[i],5-i,tileWidth);
-			ships[i].setPlacement(0, i, 0);
+			ships[i] = new Ship(TRs[i],5-i,tileWidth,(int)unplacedLocs[i].x,(int)unplacedLocs[i].y);
+			//ships[i].setPlacement(0, i, 0);
+		}
+		
+		
+		TRs[0] = AssetLoader.buttonBegin;
+
+		for(int i=0;i<buttonCount;i++) {
+		//for(int i=0;i<1;i++) {
+			buttons[i] = new Button(AssetLoader.buttonBegin, 0, 0);
+			//ships[i].setPlacement(0, i, 0);
 		}
 		
 		
@@ -116,6 +135,17 @@ public class GameScreen implements Screen,InputProcessor {
 			ships[i].draw(batch);
 		}
 		if(activeShip>=0){ships[activeShip].draw(batch);}
+
+		for(int i=0;i<9;i++) {
+			for(int j=0;j<9;j++){
+				if(board[i][j].status>1){
+					board[i][j].spr.setColor(new Color(255,255,0,0.5f));
+					board[i][j].draw(batch);
+				}
+			}
+		}
+		
+		
 		batch.end();
 
 		
@@ -210,6 +240,9 @@ public class GameScreen implements Screen,InputProcessor {
 					touchDelta.y=screenY-ships[i].shipImage.getY();
 					System.out.println(touchDelta.x);
 					System.out.println(touchDelta.y);
+					//ships[i].isPlaced = false;
+					ships[i].isMoving = true;
+					zeroBoard();
 				} else {hit=true;}
 				newActiveShip = i;
 			}
@@ -307,12 +340,7 @@ public class GameScreen implements Screen,InputProcessor {
 		hitOnActive = false;
 		hit=false;
 		
-		//zero the board
-		for(int i=0;i<9;i++) {
-			for(int j=0;j<9;j++){
-				board[i][j].status = 0;
-			}
-		}
+		zeroBoard();
 		
 		for(int i=0;i<shipCount;i++){
 			if(!ships[i].isPlaced){continue;}
@@ -346,8 +374,20 @@ public class GameScreen implements Screen,InputProcessor {
 		for(int i=8;i>=0;i--) {
 			for(int j=0;j<9;j++){
 				System.out.print(board[j][i].status);
+				
 			}
 			System.out.println();
+		}
+	}
+	
+	
+	public void zeroBoard(){
+		//zero the board
+		for(int i=0;i<9;i++) {
+			for(int j=0;j<9;j++){
+				board[i][j].status = 0;
+				board[i][j].spr.setColor(Color.WHITE);
+			}
 		}
 	}
 	
@@ -357,6 +397,12 @@ public class GameScreen implements Screen,InputProcessor {
 				if(board[i][j].status>1) {return false;}
 			}
 		}
+		
+		for(int i=0;i<shipCount;i++){
+			if(!ships[i].isPlaced) {return false;}
+		}
+			
+			
 		return true;
 	}
 	
@@ -365,7 +411,6 @@ public class GameScreen implements Screen,InputProcessor {
 		// TODO Auto-generated method stub
 		screenY = Gdx.graphics.getHeight() - screenY;
 		if(hitOnActive) {
-			System.out.println(activeShip);
 			ships[activeShip].setPosition(screenX-(int)touchDelta.x, screenY-(int)touchDelta.y);
 		}
 		

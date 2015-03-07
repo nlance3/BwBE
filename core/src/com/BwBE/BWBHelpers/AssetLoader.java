@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class AssetLoader {
 	
 	public static Texture logoTexture, backgroundTexture, tileTexture, carrierTexture, bshipTexture, subTexture, scoutTexture, fisherTexture;
+	public static Texture buttonBegin, buttonRemove;
+	public static TextureRegion buttonBeginTR, buttonRemoveTR;
 	public static TextureRegion logo, background, tileTR, carrierTR, bshipTR, subTR, scoutTR, fisherTR;
 	public static Sprite bgSprite;
 	public static FileHandle tilefh; 
@@ -48,6 +50,15 @@ public class AssetLoader {
 		fisherTexture = new Texture(Gdx.files.internal("data/fisherman.png"));
 		fisherTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		fisherTR = new TextureRegion(fisherTexture);
+		
+		buttonBegin = new Texture(Gdx.files.internal("data/begin.png"));
+		buttonBegin.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		buttonBeginTR = new TextureRegion(buttonBegin);
+
+		//buttonRemove = new Texture(Gdx.files.internal("data/remove.png"));
+		//buttonRemove.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		//buttonRemoveTR = new TextureRegion(buttonRemove);	
+		
 	}
 	
 	public static void dispose() {

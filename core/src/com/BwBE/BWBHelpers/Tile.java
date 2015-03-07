@@ -20,7 +20,7 @@ import com.BwBE.BWBHelpers.Ship;
 */
 public class Tile {
 	
-	private Sprite spr;
+	public Sprite spr;
 	public int status;
 	
 	public Tile(Texture img) {

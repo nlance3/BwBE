@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 public class Ship {
 	
 	public Sprite shipImage;
-	public boolean isPlaced;
+	public boolean isPlaced, isMoving;
 	public int x,y,d,sp;
 	public int upx,upy;
 	
@@ -25,6 +25,21 @@ public class Ship {
 		sp = spaces;
 		isPlaced = false;
 	}
+	
+	
+	public Ship(Texture txr, int spaces, float size, int x, int y) {
+		shipImage = new Sprite(txr);
+		System.out.println(shipImage.getHeight());
+		shipImage.setSize(size*spaces,size);
+		shipImage.setOrigin(size/2,size/2);
+		//System.out.println(scaling);
+		upx = x;
+		upy = y;
+		//shipImage.setOrigin(18,18);
+		sp = spaces;
+		isPlaced = false;
+	}
+	
 	
 	//dir 0 = right
 	//dir 1 = up
@@ -70,9 +85,10 @@ public class Ship {
 	public void draw(Batch batch) {
 		// Since we're using settings from here derived from game height/width update everything when called.
 		//if not placed
-		if(!this.isPlaced) {
+		if(!this.isPlaced && !this.isMoving) {
 			setPosition(upx,upy);
-		} else { 
+			shipImage.draw(batch);
+		} else  { 
 			shipImage.draw(batch); 
 		}
 		
